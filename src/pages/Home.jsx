@@ -1,9 +1,27 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { listJobs, listTopics } from "../store.js";
+import { listJobs, listTopics } from "../services/store.js";
 
 export default function Home() {
-  const jobs = listJobs().slice(0, 2);
-  const topics = listTopics().slice(0, 2);
+  const [jobs, setJobs] = useState([]);
+  const [topics, setTopics] = useState([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let live = true;
+    Promise.all([listJobs(), listTopics()])
+      .then(([nextJobs, nextTopics]) => {
+        if (!live) return;
+        setJobs(nextJobs.slice(0, 2));
+        setTopics(nextTopics.slice(0, 2));
+      })
+      .catch((err) => {
+        if (live) setError(err.message);
+      });
+    return () => {
+      live = false;
+    };
+  }, []);
 
   return (
     <main className="page">
@@ -17,9 +35,10 @@ export default function Home() {
           </p>
         </div>
         <p className="note">
-          Registracija jau veikia šioje naršyklėje. Bendra dalyvių bazė bus kitas žingsnis.
+          Skelbimai ir temos skaitomi iš bendros bazės. Keisti ir trinti galima tik savo įrašus.
         </p>
       </div>
+      {error && <p className="error">{error}</p>}
       <div className="paths">
         <Link className="tile" to="/jobs">
           <strong>Rasti darbą</strong>
@@ -39,6 +58,7 @@ export default function Home() {
         <Link to="/jobs">Visi darbai</Link>
       </div>
       <div className="board">
+        {jobs.length === 0 && !error && <p className="note">Skelbimų dar nėra.</p>}
         {jobs.map((job) => (
           <Link className="row" key={job.id} to={`/jobs/${job.id}`}>
             <strong>{job.title}</strong>
@@ -51,6 +71,7 @@ export default function Home() {
         <Link to="/forum">Visos temos</Link>
       </div>
       <div className="board">
+        {topics.length === 0 && !error && <p className="note">Temų dar nėra.</p>}
         {topics.map((topic) => (
           <Link className="row" key={topic.id} to={`/forum/${topic.id}`}>
             <strong>{topic.title}</strong>

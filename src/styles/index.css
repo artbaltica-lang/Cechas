@@ -151,6 +151,8 @@ textarea { min-height: 120px; resize: vertical; }
 
 .note { color: var(--muted); font-size: 14px; }
 
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
 @media (max-width: 800px) {
   .paths, .split { grid-template-columns: 1fr; }
   .site-header, .section-head, .toolbar { align-items: flex-start; flex-direction: column; }

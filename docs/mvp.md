@@ -1,153 +1,213 @@
-# Cechas — первая версия и модель данных
+# Cechas — pirmoji versija ir duomenų modelis
 
-Cechas — сайт для тех, кто работает с искусственным интеллектом, нейросетями и администрированием сайтов. Участник регистрируется, ищет работу, предлагает работу и общается на форуме.
+Cechas — svetainė tiems, kas dirba su dirbtiniu intelektu, neuroniniais tinklais ir svetainių administravimu. Dalyvis registruojasi, ieško darbo, siūlo darbą ir bendrauja forume.
 
-Сейчас эти данные живут только в браузере. Ниже зафиксировано, что войдёт в общую базу, и как именно они связаны.
+Duomenys skaitomi ir rašomi į bendrą bazę. Žemiau užfiksuota, kas įeina į pirmąją versiją ir kaip eilutės susijusios.
 
-## Что входит в первую версию
+## Kas įeina į pirmąją versiją
 
-- Регистрация и вход. Пароль хранит система входа, не таблица профиля.
-- Доска работы: список, фильтр по области, страница объявления, новое объявление.
-- Форум: список тем, страница темы, новая тема, ответ.
-- Участник видит все объявления и темы. Создавать их может только вошедший пользователь.
-- Удаление профиля удаляет его объявления, темы и ответы.
+- Registracija ir prisijungimas. Slaptažodį saugo prisijungimo sistema, ne profilio lentelė.
+- Darbų lenta: sąrašas, filtras pagal sritį, skelbimo puslapis, naujas skelbimas.
+- Forumas: temų sąrašas, temos puslapis, nauja tema, atsakymas.
+- Dalyvis mato visus skelbimus ir temas. Kurti juos gali tik prisijungęs naudotojas.
+- Savo skelbimą, temą ir atsakymą galima pakeisti ir ištrinti. Svetimos eilutės lieka vietoje.
+- Profilio trynimas pašalina jo skelbimus, temas ir atsakymus.
 
-## Что намеренно остаётся на потом
+## Kas sąmoningai lieka vėlesniam laikui
 
-- Отклик на вакансию и переписка с автором.
-- Редактирование и удаление отдельного объявления, темы или ответа.
-- Поиск по тексту.
-- Несколько областей у одного объявления и отдельный справочник областей.
-- Роли модератора, жалобы, блокировка участников.
-- Аватар, уведомления, письма на почту кроме самого входа.
-- Страницы компаний отдельно от участника.
+- Atsiliepimas į skelbimą ir susirašinėjimas su autoriumi.
+- Paieška pagal tekstą.
+- Kelios sritys viename skelbime ir atskiras sričių žinynas.
+- Moderatoriaus rolės, skundai, dalyvių blokavimas.
+- Avataras, pranešimai, laiškai į paštą, išskyrus patį prisijungimą.
+- Įmonių puslapiai atskirai nuo dalyvio.
 
-Эти возможности не получают своих таблиц в первой версии, чтобы не хранить данные, которыми сайт ещё не пользуется.
+Šios galimybės pirmojoje versijoje negauna savo lentelių, kad nebūtų saugomi duomenys, kurių svetainė dar nenaudoja.
 
-## 4.1. Таблицы
+## Įgyvendinimo būsena
 
-В системе четыре отдельных объекта.
+| Galimybė | Būsena |
+|---|---|
+| Registracija ir prisijungimas. Slaptažodis lieka prisijungimo sistemoje | padaryta |
+| Skelbimų sąrašas, filtras pagal sritį, skelbimo puslapis | padaryta |
+| Naujas skelbimas nuo prisijungusio dalyvio | padaryta |
+| Savo skelbimo keitimas ir trynimas | padaryta |
+| Temų sąrašas, temos puslapis, nauja tema, atsakymas | padaryta |
+| Savo temos ir savo atsakymo keitimas ir trynimas | padaryta |
+| Autoriaus vardas kortelėje, paštas tik pačiam dalyviui | padaryta |
+| Savo vardo keitimas | padaryta |
+| Savo paskyros trynimas kartu su skelbimais, temomis ir atsakymais | padaryta |
+| Atsiliepimas, susirašinėjimas, paieška, moderavimas, atskiri įmonių puslapiai | neįeina į pirmąją versiją |
 
-| Таблица | Объект | Связь |
+Svetainė skaito ir rašo bendrą bazę per `src/services/store.js`. Keitimo mygtukai matomi tik eilutės autoriui. Pačią rašymo teisę tikrina bazė.
+
+## 4.1. Lentelės
+
+Sistemoje keturi atskiri objektai.
+
+| Lentelė | Objektas | Ryšys |
 |---|---|---|
-| `profiles` | Участник | Один участник |
-| `jobs` | Объявление о работе | Принадлежит одному участнику. У участника много объявлений |
-| `topics` | Тема форума | Принадлежит одному участнику. У участника много тем |
-| `replies` | Ответ в теме | Принадлежит одной теме и одному автору. У темы много ответов |
+| `profiles` | Dalyvis | Vienas dalyvis |
+| `jobs` | Darbo skelbimas | Priklauso vienam dalyviui. Dalyvis turi daug skelbimų |
+| `topics` | Forumo tema | Priklauso vienam dalyviui. Dalyvis turi daug temų |
+| `replies` | Atsakymas temoje | Priklauso vienai temai ir vienam autoriui. Tema turi daug atsakymų |
 
-Область объявления (`tag`) — это поле в `jobs`, а не отдельная таблица. В первой версии у объявления одна область из фиксированного списка: `neuroniniai tinklai`, `administravimas`, `DI produktai`, `kita`.
+Skelbimo sritis (`tag`) yra laukas lentelėje `jobs`, ne atskira lentelė. Pirmojoje versijoje skelbimas turi vieną sritį iš fiksuoto sąrašo: `neuroniniai tinklai`, `administravimas`, `DI produktai`, `kita`.
 
-Пароль не является объектом приложения. Его не выносят в свою таблицу.
+Slaptažodis nėra programos objektas. Jis neiškeliamas į savo lentelę.
 
-## 4.2. Поля
+## 4.2. Laukai
 
-Обязательное поле отмечено как «да». Если значение не передано, база подставляет указанное по умолчанию. Первичный ключ у каждой таблицы — `id`.
+Privalomas laukas pažymėtas «taip». Jei reikšmė neperduota, bazė įrašo nurodytą numatytąją. Kiekvienos lentelės pirminis raktas — `id`.
 
 ### `profiles`
 
-Участник. Строка появляется вместе с учётной записью входа, `id` совпадает с идентификатором этой учётной записи.
+Dalyvis. Eilutė atsiranda kartu su prisijungimo paskyra, `id` sutampa su tos paskyros identifikatoriumi.
 
-| Поле | Тип | Первичный ключ | Обязательное | По умолчанию | Смысл |
+| Laukas | Tipas | Pirminis raktas | Privalomas | Numatyta | Prasmė |
 |---|---|---|---|---|---|
-| `id` | `uuid` | да | да | нет, берётся из входа | Кто это |
-| `name` | `text` | нет | да | нет | Имя, от 2 до 40 символов |
-| `email` | `text` | нет | да | нет | Почта, уникальная, в нижнем регистре |
-| `created_at` | `timestamptz` | нет | да | `now()` | Когда зарегистрировался |
+| `id` | `uuid` | taip | taip | ne, imamas iš prisijungimo | Kas tai |
+| `name` | `text` | ne | taip | ne | Vardas, nuo 2 iki 40 simbolių |
+| `email` | `text` | ne | taip | ne | Paštas, unikalus, mažosiomis raidėmis |
+| `created_at` | `timestamptz` | ne | taip | `now()` | Kada užsiregistravo |
 
 ### `jobs`
 
-Объявление о работе.
+Darbo skelbimas.
 
-| Поле | Тип | Первичный ключ | Обязательное | По умолчанию | Смысл |
+| Laukas | Tipas | Pirminis raktas | Privalomas | Numatyta | Prasmė |
 |---|---|---|---|---|---|
-| `id` | `uuid` | да | да | `gen_random_uuid()` | Объявление |
-| `author_id` | `uuid` | нет | да | нет | Автор, ссылка на `profiles.id` |
-| `title` | `text` | нет | да | нет | Что нужно сделать, от 4 до 120 символов |
-| `company` | `text` | нет | да | нет | Кто предлагает, до 80 символов |
-| `place` | `text` | нет | да | `nuotoliniu būdu` | Где работа, до 80 символов |
-| `tag` | `text` | нет | да | `kita` | Одна область из списка выше |
-| `description` | `text` | нет | да | нет | Описание, от 10 до 2000 символов |
-| `created_at` | `timestamptz` | нет | да | `now()` | Когда опубликовано |
+| `id` | `uuid` | taip | taip | `gen_random_uuid()` | Skelbimas |
+| `author_id` | `uuid` | ne | taip | ne | Autorius, nuoroda į `profiles.id` |
+| `title` | `text` | ne | taip | ne | Ką reikia padaryti, nuo 4 iki 120 simbolių |
+| `company` | `text` | ne | taip | ne | Kas siūlo, iki 80 simbolių |
+| `place` | `text` | ne | taip | `nuotoliniu būdu` | Kur darbas, iki 80 simbolių |
+| `tag` | `text` | ne | taip | `kita` | Viena sritis iš sąrašo aukščiau |
+| `description` | `text` | ne | taip | ne | Aprašymas, nuo 10 iki 2000 simbolių |
+| `created_at` | `timestamptz` | ne | taip | `now()` | Kada paskelbta |
 
 ### `topics`
 
-Тема форума.
+Forumo tema.
 
-| Поле | Тип | Первичный ключ | Обязательное | По умолчанию | Смысл |
+| Laukas | Tipas | Pirminis raktas | Privalomas | Numatyta | Prasmė |
 |---|---|---|---|---|---|
-| `id` | `uuid` | да | да | `gen_random_uuid()` | Тема |
-| `author_id` | `uuid` | нет | да | нет | Автор, ссылка на `profiles.id` |
-| `title` | `text` | нет | да | нет | Название, от 4 до 140 символов |
-| `body` | `text` | нет | да | нет | Первое сообщение, от 10 до 4000 символов |
-| `created_at` | `timestamptz` | нет | да | `now()` | Когда открыта |
+| `id` | `uuid` | taip | taip | `gen_random_uuid()` | Tema |
+| `author_id` | `uuid` | ne | taip | ne | Autorius, nuoroda į `profiles.id` |
+| `title` | `text` | ne | taip | ne | Pavadinimas, nuo 4 iki 140 simbolių |
+| `body` | `text` | ne | taip | ne | Pirmoji žinutė, nuo 10 iki 4000 simbolių |
+| `created_at` | `timestamptz` | ne | taip | `now()` | Kada atidaryta |
 
 ### `replies`
 
-Ответ внутри темы. Своей ссылки на другие ответы нет: в первой версии обсуждение плоское.
+Atsakymas temos viduje. Savo nuorodos į kitus atsakymus nėra: pirmojoje versijoje pokalbis plokščias.
 
-| Поле | Тип | Первичный ключ | Обязательное | По умолчанию | Смысл |
+| Laukas | Tipas | Pirminis raktas | Privalomas | Numatyta | Prasmė |
 |---|---|---|---|---|---|
-| `id` | `uuid` | да | да | `gen_random_uuid()` | Ответ |
-| `topic_id` | `uuid` | нет | да | нет | Тема, ссылка на `topics.id` |
-| `author_id` | `uuid` | нет | да | нет | Автор, ссылка на `profiles.id` |
-| `body` | `text` | нет | да | нет | Текст, от 2 до 4000 символов |
-| `created_at` | `timestamptz` | нет | да | `now()` | Когда написан |
+| `id` | `uuid` | taip | taip | `gen_random_uuid()` | Atsakymas |
+| `topic_id` | `uuid` | ne | taip | ne | Tema, nuoroda į `topics.id` |
+| `author_id` | `uuid` | ne | taip | ne | Autorius, nuoroda į `profiles.id` |
+| `body` | `text` | ne | taip | ne | Tekstas, nuo 2 iki 4000 simbolių |
+| `created_at` | `timestamptz` | ne | taip | `now()` | Kada parašyta |
 
-Удаление темы удаляет её ответы. Удаление участника удаляет его объявления, темы и ответы.
+Temos trynimas pašalina jos atsakymus. Dalyvio trynimas pašalina jo skelbimus, temas ir atsakymus.
 
-## 4.3. Связи
+## 4.3. Ryšiai
 
-Связь задаётся внешним ключом. Между входом и профилем связь один к одному: у одной учётной записи ровно один профиль. Остальные связи — один ко многим. Обязательное поле связи нельзя оставить пустым, поэтому при удалении родителя связанные строки не остаются без владельца.
+Ryšį nustato išorinis raktas. Tarp prisijungimo ir profilio ryšys vienas su vienu: viena paskyra turi lygiai vieną profilį. Kiti ryšiai — vienas su daug. Privalomo ryšio lauko palikti tuščio negalima, todėl trinant tėvą susijusios eilutės nelieka be savininko.
 
-| Дочерняя таблица | Внешний ключ | Родитель | Тип | При удалении родителя |
+| Vaikinė lentelė | Išorinis raktas | Tėvas | Tipas | Trinant tėvą |
 |---|---|---|---|---|
-| `profiles` | `id` | учётная запись входа | один к одному | профиль удаляется вместе со входом |
-| `jobs` | `author_id` | `profiles.id` | один ко многим | объявления этого участника удаляются |
-| `topics` | `author_id` | `profiles.id` | один ко многим | темы этого участника удаляются |
-| `replies` | `topic_id` | `topics.id` | один ко многим | ответы этой темы удаляются |
-| `replies` | `author_id` | `profiles.id` | один ко многим | ответы этого участника удаляются |
+| `profiles` | `id` | prisijungimo paskyra | vienas su vienu | profilis trinamas kartu su prisijungimu |
+| `jobs` | `author_id` | `profiles.id` | vienas su daug | šio dalyvio skelbimai trinami |
+| `topics` | `author_id` | `profiles.id` | vienas su daug | šio dalyvio temos trinamos |
+| `replies` | `topic_id` | `topics.id` | vienas su daug | šios temos atsakymai trinami |
+| `replies` | `author_id` | `profiles.id` | vienas su daug | šio dalyvio atsakymai trinami |
 
-Ответ держится на двух связях сразу. Он не может ссылаться на несуществующую тему или на чужого участника как на себя: `author_id` при создании равен вошедшему пользователю.
+Atsakymas laikosi ant dviejų ryšių iš karto. Jis negali rodyti į nesančią temą arba į svetimą dalyvį kaip į save: kuriant `author_id` lygus prisijungusiam naudotojui.
 
-Если удалить участника, пропадают его объявления и темы. Вместе с темами пропадают и чужие ответы внутри них. Если удалить только тему, пропадают её ответы, а авторы этих ответов остаются.
+Jei ištrinti dalyvį, dingsta jo skelbimai ir temos. Kartu su temomis dingsta ir svetimi atsakymai jų viduje. Jei ištrinti tik temą, dingsta jos atsakymai, o tų atsakymų autoriai lieka.
 
-Отдельное объявление, тему или ответ в первой версии вручную не удаляют. Они исчезают только вместе с родителем.
+Savo skelbimą, temą ar atsakymą dalyvis trina pats. Svetimos eilutės taip netrinamos. Jei ištrinti temą, kartu su ja išeina ir kitų žmonių atsakymai jos viduje.
 
-## 4.4. Ограничения и доступ
+```mermaid
+erDiagram
+  profiles ||--o{ jobs : "autorius"
+  profiles ||--o{ topics : "autorius"
+  profiles ||--o{ replies : "autorius"
+  topics ||--o{ replies : "tema"
 
-### Уникальность
+  profiles {
+    uuid id PK
+    text name
+    text email UK
+    timestamptz created_at
+  }
+  jobs {
+    uuid id PK
+    uuid author_id FK
+    text title
+    text company
+    text place
+    text tag
+    text description
+    timestamptz created_at
+  }
+  topics {
+    uuid id PK
+    uuid author_id FK
+    text title
+    text body
+    timestamptz created_at
+  }
+  replies {
+    uuid id PK
+    uuid topic_id FK
+    uuid author_id FK
+    text body
+    timestamptz created_at
+  }
+```
 
-Почта в `profiles.email` уникальна. Две учётные записи с одним адресом не создаются. Остальные тексты могут повторяться: два объявления могут называться одинаково.
+`profiles.id` yra tas pats identifikatorius kaip prisijungimo paskyros. Atskitos slaptažodžių lentelės nėra.
 
-### Обязательные поля
+## 4.4. Apribojimai ir prieiga
 
-Пустыми нельзя оставлять имя, почту, автора, заголовок, описание, название темы, текст ответа и время создания. Место работы и область тоже обязательны, но если их не передали, база подставляет `nuotoliniu būdu` и `kita`.
+### Unikalumas
 
-### Допустимые значения
+Paštas lauke `profiles.email` unikalus. Dvi paskyros su tuo pačiu adresu nekuriamos. Kiti tekstai gali kartotis: du skelbimai gali vadintis vienodai.
 
-| Поле | Правило |
+### Privalomi laukai
+
+Tuščių palikti negalima vardo, pašto, autoriaus, antraštės, aprašymo, temos pavadinimo, atsakymo teksto ir sukūrimo laiko. Darbo vieta ir sritis irgi privalomos, bet jei jų neperdavė, bazė įrašo `nuotoliniu būdu` ir `kita`.
+
+### Leistinos reikšmės
+
+| Laukas | Taisyklė |
 |---|---|
-| `profiles.name` | от 2 до 40 символов после обрезки пробелов |
-| `profiles.email` | формат почты и только строчные буквы |
-| `jobs.title` | от 4 до 120 символов |
-| `jobs.company` | от 1 до 80 символов |
-| `jobs.place` | от 1 до 80 символов |
-| `jobs.tag` | только `neuroniniai tinklai`, `administravimas`, `DI produktai`, `kita` |
-| `jobs.description` | от 10 до 2000 символов |
-| `topics.title` | от 4 до 140 символов |
-| `topics.body` | от 10 до 4000 символов |
-| `replies.body` | от 2 до 4000 символов |
+| `profiles.name` | nuo 2 iki 40 simbolių nukirpus tarpus |
+| `profiles.email` | pašto formatas ir tik mažosios raidės |
+| `jobs.title` | nuo 4 iki 120 simbolių |
+| `jobs.company` | nuo 1 iki 80 simbolių |
+| `jobs.place` | nuo 1 iki 80 simbolių |
+| `jobs.tag` | tik `neuroniniai tinklai`, `administravimas`, `DI produktai`, `kita` |
+| `jobs.description` | nuo 10 iki 2000 simbolių |
+| `topics.title` | nuo 4 iki 140 simbolių |
+| `topics.body` | nuo 10 iki 4000 simbolių |
+| `replies.body` | nuo 2 iki 4000 simbolių |
 
-Значение вне этого списка база не записывает.
+Reikšmės už šio sąrašo bazė neįrašo.
 
-### Чьи данные кому видны
+### Kieno duomenys kam matomi
 
-Объявления, темы и ответы читают все, включая гостя: доска и форум открыты. Имя автора тоже открыто, оно нужно на карточке объявления и в теме.
+Skelbimus, temas ir atsakymus skaito visi, įskaitant svečią: lenta ir forumas atviri. Autoriaus vardas irgi atviras, jis reikalingas skelbimo kortelėje ir temoje.
 
-Почта видна только самому участнику. Пароль не лежит в `profiles` и из приложения не читается.
+Paštas matomas tik pačiam dalyviui. Slaptažodžio `profiles` lentelėje nėra ir iš programos jis neskaitomas.
 
-Создать объявление, тему или ответ может только вошедший участник, и только от своего имени: `author_id` совпадает с его идентификатором. Подставить чужой `author_id` нельзя. После публикации автора и тему ответа не меняют.
+Sukurti skelbimą, temą ar atsakymą gali tik prisijungęs dalyvis ir tik savo vardu: `author_id` sutampa su jo identifikatoriumi. Įrašyti svetimo `author_id` negalima. Po paskelbimo autoriaus, sukūrimo laiko ir atsakymo temos nekeičia.
 
-Имя участник меняет только у своей строки. Чужой профиль не изменяется и не удаляется.
+Keisti ir trinti skelbimą, temą ar atsakymą gali tik jų autorius. Tekstas ir skelbimo laukai keičiasi, eilutės savininkas — ne.
 
-Удалить можно только свою учётную запись. Объявления, темы и ответы при этом уходят по правилам из раздела 4.3, а не отдельным разрешением на каждую строку.
+Vardą dalyvis keičia tik savo eilutėje. Svetimas profilis nekeičiamas ir netrinamas.
+
+Ištrinti galima savo paskyrą ir savo įrašus. Šio dalyvio skelbimai, temos ir atsakymai trinant paskyrą išeina pagal 4.3 skyriaus taisykles.
